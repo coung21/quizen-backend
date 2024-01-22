@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	"quizen/component/worker"
 	"quizen/config"
 	"quizen/db"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hibiken/asynq"
 )
 
 func main() {
@@ -21,6 +23,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	_ = worker.NewRedisTaskDistributor(asynq.RedisClientOpt{Addr: config.RedisAddress})
+	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress})
+
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",

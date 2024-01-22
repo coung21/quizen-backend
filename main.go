@@ -29,11 +29,11 @@ func main() {
 	_ = worker.NewRedisTaskDistributor(asynq.RedisClientOpt{Addr: config.RedisAddress})
 	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress})
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	// r.GET("/ping", func(c *gin.Context) {
+	// 	c.JSON(200, gin.H{
+	// 		"message": "pong",
+	// 	})
+	// })
 
 	r.Run(config.ServerAddress)
 }

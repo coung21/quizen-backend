@@ -51,7 +51,9 @@ func (p *RedisTaskProcessor) ProcessTaskSendVerifyEmail(ctx context.Context, t *
 		return fmt.Errorf("failed to unmarshal payload: %w", err)
 	}
 
-	log.Info().Str("type", t.Type()).Bytes("payload", t.Payload()).Str("email", payload.Email).Msg("processedtask")
+	//Todo: send email
+
+	log.Info().Str("type", t.Type()).Str("email", payload.Email).Msg("processed task")
 
 	return nil
 }

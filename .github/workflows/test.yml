@@ -24,12 +24,12 @@ jobs:
 
     - name: Set up environment
       run: |
-        echo "SERVER_ADDRESS=${{ secrets.SERVER_ADDRESS }}" >> $GITHUB_ENV
-        echo "MYSQL_URI=${{ secrets.MYSQL_URI }}" >> $GITHUB_ENV
-        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-        echo "EMAIL_SENDER_NAME=${{ secrets.EMAIL_SENDER_NAME }}" >> $GITHUB_ENV
-        echo "EMAIL_SENDER_ADDRESS=${{ secrets.EMAIL_SENDER_ADDRESS }}" >> $GITHUB_ENV
-        echo "EMAIL_SENDER_PASSWORD=${{ secrets.EMAIL_SENDER_PASSWORD }}" >> $GITHUB_ENV
+        echo "SERVER_ADDRESS=${{ secrets.SERVER_ADDRESS }}" >> .env
+        echo "MYSQL_URI=${{ secrets.MYSQL_URI }}" >> .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "EMAIL_SENDER_NAME=${{ secrets.EMAIL_SENDER_NAME }}" >> .env
+        echo "EMAIL_SENDER_ADDRESS=${{ secrets.EMAIL_SENDER_ADDRESS }}" >> .env
+        echo "EMAIL_SENDER_PASSWORD=${{ secrets.EMAIL_SENDER_PASSWORD }}" >> .env
 
     - name: Test
       run: go test -v ./...

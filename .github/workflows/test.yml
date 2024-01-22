@@ -22,5 +22,14 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
 
+    - name: Set up environment
+      run: |
+        echo "SERVER_ADDRESS=${{ secrets.SERVER_ADDRESS }}" >> $GITHUB_ENV
+        echo "MYSQL_URI=${{ secrets.MYSQL_URI }}" >> $GITHUB_ENV
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+        echo "EMAIL_SENDER_NAME=${{ secrets.EMAIL_SENDER_NAME }}" >> $GITHUB_ENV
+        echo "EMAIL_SENDER_ADDRESS=${{ secrets.EMAIL_SENDER_ADDRESS }}" >> $GITHUB_ENV
+        echo "EMAIL_SENDER_PASSWORD=${{ secrets.EMAIL_SENDER_PASSWORD }}" >> $GITHUB_ENV
+
     - name: Test
       run: go test -v ./...

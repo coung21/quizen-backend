@@ -5,13 +5,15 @@ import (
 	"quizen/component/worker"
 	"quizen/config"
 	"quizen/db"
+	"quizen/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hibiken/asynq"
 )
 
 func main() {
-	r := gin.Default()
+	r := gin.New()
+	r.Use(middleware.Logger(), gin.Recovery())
 
 	config, err := config.LoadConfig(".")
 	if err != nil {

@@ -21,6 +21,7 @@ func Logger() gin.HandlerFunc {
 			log.Error().
 				Int("status", status).
 				Str("method", c.Request.Method).
+				Time("time", time.Now()).
 				Str("path", c.Request.URL.Path).
 				Dur("latency", time.Since(start)).
 				Msg("Server Error")
@@ -28,6 +29,7 @@ func Logger() gin.HandlerFunc {
 			log.Warn().
 				Int("status", status).
 				Str("method", c.Request.Method).
+				Time("time", time.Now()).
 				Str("path", c.Request.URL.Path).
 				Dur("latency", time.Since(start)).
 				Msg("Client Error")
@@ -35,6 +37,7 @@ func Logger() gin.HandlerFunc {
 			log.Info().
 				Int("status", status).
 				Str("method", c.Request.Method).
+				Time("time", time.Now()).
 				Str("path", c.Request.URL.Path).
 				Dur("latency", time.Since(start)).
 				Msg("Success")

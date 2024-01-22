@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"time"
 
 	"github.com/rs/zerolog/log"
 
@@ -31,7 +32,7 @@ func (p *RedisTaskProcessor) Start() error {
 
 func RunTaskProcessor(redisOpt asynq.RedisClientOpt) {
 	processor := NewRedisTaskProcessor(redisOpt)
-	log.Info().Msg("starting task processor")
+	log.Info().Time("time", time.Now()).Msg("task processor starting")
 	err := processor.Start()
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to start task processor")

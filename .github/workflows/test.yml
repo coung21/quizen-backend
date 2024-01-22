@@ -32,4 +32,4 @@ jobs:
         echo "EMAIL_SENDER_PASSWORD=${{ secrets.EMAIL_SENDER_PASSWORD }}" >> .env
 
     - name: Test
-      run: go test -v ./...
+      run: make test

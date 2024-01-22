@@ -1,39 +1,31 @@
 package main
 
 import (
+	"log"
+	"quizen/config"
 	"quizen/db"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
-type Server struct {
-	Engine *gin.Engine
-}
+func main() {
+	r := gin.Default()
 
-func (s *Server) Init() {
-	s.Engine = gin.Default()
-
-	if err := godotenv.Load(); err != nil {
-		panic(err)
+	config, err := config.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
 	}
 
-	_, err := db.Connect()
+	_, err = db.Connect(config.MySqlUri)
+
 	if err != nil {
 		panic(err)
 	}
-
-}
-
-func main() {
-	s := Server{}
-	s.Init()
-
-	s.Engine.GET("/ping", func(c *gin.Context) {
+	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
-
 	})
-	s.Engine.Run(":8080")
+
+	r.Run(config.ServerAddress)
 }

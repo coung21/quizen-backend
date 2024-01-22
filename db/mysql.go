@@ -1,16 +1,14 @@
 package db
 
 import (
-	"os"
 	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-func Connect() (*gorm.DB, error) {
-	dsn := string(os.Getenv("MYSQL_URI"))
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+func Connect(uri string) (*gorm.DB, error) {
+	db, err := gorm.Open(mysql.Open(uri), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

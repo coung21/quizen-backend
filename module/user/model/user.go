@@ -8,8 +8,8 @@ import (
 
 type User struct {
 	common.SQLModel
-	Username string        `json:"username" gorm:"column:username,unique,not null,type:varchar(100)" validate:"required,min=6,max=100"`
-	Email    string        `json:"email" gorm:"column:email,unique,not null,type:varchar(100)" validate:"required,email"`
+	Username string        `json:"username" gorm:"column:username" validate:"required,min=6,max=100"`
+	Email    string        `json:"email" gorm:"column:email" validate:"required,email"`
 	Password string        `json:"password,omitempty" gorm:"column:password" validate:"required,min=6,max=100"`
 	Avatar   *common.Image `json:"avatar" gorm:"column:avatar"`
 }

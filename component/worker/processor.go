@@ -19,7 +19,16 @@ type RedisTaskProcessor struct {
 }
 
 func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt) Processor {
-	server := asynq.NewServer(redisOpt, asynq.Config{})
+	server := asynq.NewServer(redisOpt, asynq.Config{
+		Queues: map[string]int{
+			"default":  5,
+			"critical": 10,
+		},
+		ErrorHandler: asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
+			log.Error().Err(err).Type("type", task).Bytes("payload", task.Payload()).Msg("error when processing task")
+		}),
+		Logger: NewLogger(),
+	})
 	return &RedisTaskProcessor{server: server}
 }
 

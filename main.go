@@ -27,7 +27,13 @@ func main() {
 		log.Fatal("cannot load config:", err)
 	}
 
-	_, err = db.Connect(config.MySqlUri)
+	_, err = db.Connect(
+		config.MysqlUser,
+		config.MysqlPassword,
+		config.MysqlDb,
+		config.MysqlHost,
+		config.MysqlPort,
+	)
 
 	if err != nil {
 		panic(err)

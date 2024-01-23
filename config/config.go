@@ -7,7 +7,11 @@ import (
 // Config is the configuration for the application
 type Config struct {
 	ServerAddress       string `mapstructure:"SERVER_ADDRESS"`
-	MySqlUri            string `mapstructure:"MYSQL_URI"`
+	MysqlUser           string `mapstructure:"MYSQL_USER"`
+	MysqlPassword       string `mapstructure:"MYSQL_PASSWORD"`
+	MysqlDb             string `mapstructure:"MYSQL_DB"`
+	MysqlHost           string `mapstructure:"MYSQL_HOST"`
+	MysqlPort           string `mapstructure:"MYSQL_PORT"`
 	RedisAddress        string `mapstructure:"REDIS_ADDRESS"`
 	EmailSenderName     string `mapstructure:"EMAIL_SENDER_NAME"`
 	EmailSenderAddress  string `mapstructure:"EMAIL_SENDER_ADDRESS"`

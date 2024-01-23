@@ -25,9 +25,13 @@ jobs:
     - name: Set up environment
       run: |
         echo "SERVER_ADDRESS=${{ secrets.SERVER_ADDRESS }}" >> .env
-        echo "MYSQL_URI=${{ secrets.MYSQL_URI }}" >> .env
         echo "REDIS_ADDRESS=${{ secrets.REDIS_ADDRESS }}" >> .env
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+        echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
+        echo "MYSQL_DB=${{ secrets.MYSQL_DB }}" >> .env
+        echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}" >> .env
+        echo "MYSQL_PORT=${{ secrets.MYSQL_PORT }}" >> .env
         echo "EMAIL_SENDER_NAME=${{ secrets.EMAIL_SENDER_NAME }}" >> .env
         echo "EMAIL_SENDER_ADDRESS=${{ secrets.EMAIL_SENDER_ADDRESS }}" >> .env
         echo "EMAIL_SENDER_PASSWORD=${{ secrets.EMAIL_SENDER_PASSWORD }}" >> .env

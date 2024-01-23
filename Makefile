@@ -15,4 +15,13 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database "mysql://$(MYSQL_USER):$(MYSQL_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DB)" -verbose down
 
-.PHONY: test migrateup migratedown
+migrateforce:
+	migrate -path db/migration -database "mysql://$(MYSQL_USER):$(MYSQL_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DB)" -verbose force $(version)
+
+migrateup1:
+	migrate -path db/migration -database "mysql://$(MYSQL_USER):$(MYSQL_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DB)" -verbose up 1
+
+migratedown1:
+	migrate -path db/migration -database "mysql://$(MYSQL_USER):$(MYSQL_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DB)" -verbose down 1
+
+.PHONY: server test migrateup migratedown migrateforce migrateup1 migratedown1 newmigrate

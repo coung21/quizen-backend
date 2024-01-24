@@ -11,6 +11,11 @@ import (
 	"github.com/hibiken/asynq"
 )
 
+const (
+	QueueDefault  = "default"
+	QueueCritical = "critical"
+)
+
 type Processor interface {
 	Start() error
 	ProcessTaskSendVerifyEmail(ctx context.Context, t *asynq.Task) error

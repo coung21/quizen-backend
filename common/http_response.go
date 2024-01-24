@@ -1,10 +1,6 @@
 package common
 
-import (
-	"log"
-
-	"github.com/gin-gonic/gin"
-)
+import "github.com/rs/zerolog/log"
 
 type SuccesResponse struct {
 	StatusCode int         `json:"status"`
@@ -12,12 +8,12 @@ type SuccesResponse struct {
 	Data       interface{} `json:"data,omitempty"`
 }
 
-func HttpSuccessResponse(c *gin.Context, status int, message string, data interface{}) {
-	c.JSON(status, SuccesResponse{
+func NewRestResp(status int, message string, data interface{}) SuccesResponse {
+	return SuccesResponse{
 		StatusCode: status,
 		Message:    message,
 		Data:       data,
-	})
+	}
 }
 
 type RestError interface {
@@ -45,14 +41,10 @@ func (e ErrResp) Causes() interface{} {
 }
 
 func NewRestErr(status int, err string, causes interface{}) RestError {
-	log.Println(causes)
+	log.Error().Stack().Msgf("error: %s, causes: %v", err, causes)
 	return ErrResp{
 		ErrStatus: status,
 		ErrError:  err,
 		ErrCauses: err,
 	}
-}
-
-func HttpErrorResponse(c *gin.Context, err RestError) {
-	c.JSON(err.Status(), err)
 }

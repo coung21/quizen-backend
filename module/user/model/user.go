@@ -12,10 +12,10 @@ type User struct {
 	Email     string        `json:"email" gorm:"column:email" validate:"required,email"`
 	Password  string        `json:"password,omitempty" gorm:"column:password" validate:"required,min=6,max=100"`
 	Avatar    *common.Image `json:"avatar" gorm:"column:avatar"`
-	IsVerifed bool          `json:"is_verify" gorm:"column:is_verify,default:false"`
+	IsVerifed bool          `json:"is_verified" gorm:"column:is_verified"`
 }
 
-func (User) TableName() string { return "user" }
+func (User) TableName() string { return "users" }
 
 func (u *User) HashPassword() error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)

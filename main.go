@@ -9,6 +9,8 @@ import (
 	"quizen/db"
 	"quizen/middleware"
 	userstore "quizen/module/user/store"
+	userTransport "quizen/module/user/transport"
+	useruc "quizen/module/user/usecase"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -41,11 +43,13 @@ func main() {
 		panic(err)
 	}
 
+	taskDistributor := worker.NewRedisTaskDistributor(asynq.RedisClientOpt{Addr: config.RedisAddress})
+
 	userStore := userstore.NewUserStore(mdb)
+	userUc := useruc.NewUserUsecase(userStore, taskDistributor)
+	userTransport.InitializeUserRoutes(userTransport.NewHTTPHandler(userUc), r.Group("/v1/users"))
 
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
-
-	_ = worker.NewRedisTaskDistributor(asynq.RedisClientOpt{Addr: config.RedisAddress})
 	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress}, userStore, mailer)
 
 	r.Run(config.ServerAddress)

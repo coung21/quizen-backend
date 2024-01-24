@@ -3,10 +3,12 @@ package main
 import (
 	"log"
 	"os"
+	"quizen/component/mail"
 	"quizen/component/worker"
 	"quizen/config"
 	"quizen/db"
 	"quizen/middleware"
+	userstore "quizen/module/user/store"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +29,7 @@ func main() {
 		log.Fatal("cannot load config:", err)
 	}
 
-	_, err = db.Connect(
+	mdb, err := db.Connect(
 		config.MysqlUser,
 		config.MysqlPassword,
 		config.MysqlDb,
@@ -39,14 +41,12 @@ func main() {
 		panic(err)
 	}
 
-	_ = worker.NewRedisTaskDistributor(asynq.RedisClientOpt{Addr: config.RedisAddress})
-	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress})
+	userStore := userstore.NewUserStore(mdb)
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
+
+	_ = worker.NewRedisTaskDistributor(asynq.RedisClientOpt{Addr: config.RedisAddress})
+	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress}, userStore, mailer)
 
 	r.Run(config.ServerAddress)
 }

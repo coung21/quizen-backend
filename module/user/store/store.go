@@ -9,6 +9,9 @@ import (
 
 type Store interface {
 	CreateUser(context.Context, *model.User) (*model.User, error)
+	GetUser(context.Context, int) (*model.User, error)
+	GetUserByEmail(context.Context, string) (*model.User, error)
+	UpdateUser(context.Context, int, *model.User) (*model.User, error)
 }
 
 type UserStore struct {

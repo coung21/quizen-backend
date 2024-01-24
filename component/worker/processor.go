@@ -2,11 +2,18 @@ package worker
 
 import (
 	"context"
+	"quizen/component/mail"
+	userstore "quizen/module/user/store"
 	"time"
 
 	"github.com/rs/zerolog/log"
 
 	"github.com/hibiken/asynq"
+)
+
+const (
+	QueueDefault  = "default"
+	QueueCritical = "critical"
 )
 
 type Processor interface {
@@ -16,20 +23,22 @@ type Processor interface {
 
 type RedisTaskProcessor struct {
 	server *asynq.Server
+	ustore userstore.Store
+	mailer mail.EmailSender
 }
 
-func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt) Processor {
+func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store userstore.Store, mailer mail.EmailSender) Processor {
 	server := asynq.NewServer(redisOpt, asynq.Config{
 		Queues: map[string]int{
-			"default":  5,
-			"critical": 10,
+			QueueDefault:  5,
+			QueueCritical: 10,
 		},
 		ErrorHandler: asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
 			log.Error().Err(err).Type("type", task).Bytes("payload", task.Payload()).Msg("error when processing task")
 		}),
 		Logger: NewLogger(),
 	})
-	return &RedisTaskProcessor{server: server}
+	return &RedisTaskProcessor{server: server, ustore: store, mailer: mailer}
 }
 
 func (p *RedisTaskProcessor) Start() error {
@@ -39,8 +48,8 @@ func (p *RedisTaskProcessor) Start() error {
 	return p.server.Run(mux)
 }
 
-func RunTaskProcessor(redisOpt asynq.RedisClientOpt) {
-	processor := NewRedisTaskProcessor(redisOpt)
+func RunTaskProcessor(redisOpt asynq.RedisClientOpt, store userstore.Store, mailer mail.EmailSender) {
+	processor := NewRedisTaskProcessor(redisOpt, store, mailer)
 	log.Info().Time("time", time.Now()).Msg("task processor starting")
 	err := processor.Start()
 	if err != nil {

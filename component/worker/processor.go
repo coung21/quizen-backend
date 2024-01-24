@@ -30,8 +30,8 @@ type RedisTaskProcessor struct {
 func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store userstore.Store, mailer mail.EmailSender) Processor {
 	server := asynq.NewServer(redisOpt, asynq.Config{
 		Queues: map[string]int{
-			"default":  5,
-			"critical": 10,
+			QueueDefault:  5,
+			QueueCritical: 10,
 		},
 		ErrorHandler: asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
 			log.Error().Err(err).Type("type", task).Bytes("payload", task.Payload()).Msg("error when processing task")

@@ -25,7 +25,7 @@ func (s *UserStore) GetUserByEmail(ctx context.Context, email string) (*model.Us
 	var user model.User
 	if err := s.db.Where("email = ?", email).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, common.BadRequest
+			return nil, common.NotFound
 		}
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (s *UserStore) GetUserById(ctx context.Context, id int) (*model.User, error
 	var user model.User
 	if err := s.db.Where("id = ?", id).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, common.BadRequest
+			return nil, common.NotFound
 		}
 		return nil, err
 	}

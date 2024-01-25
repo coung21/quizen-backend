@@ -8,26 +8,52 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type createUserRequest struct {
+	Username string `json:"username" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+// CreateUserHandler godoc
+// @Summary Register a new user
+// @Description Register a new user and send a verification email
+// @Tags user
+// @Produce application/json
+// @Param user body createUserRequest true "User info"
+// @Success 201 {object} model.User "Success"
+// @Failure 400 {object} common.ErrResp "Bad Request"
+// @Failure 500 {object} common.ErrResp "Internal Server Error"
+// @Router /users/register [post]
 func (h *httpHandler) CreateUserHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var user *model.User
-		if err := c.ShouldBindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, common.NewRestResp(http.StatusBadRequest, err.Error(), err))
+		var requestParams createUserRequest
+
+		if err := c.ShouldBindJSON(&requestParams); err != nil {
+			c.JSON(http.StatusBadRequest, common.NewRestErr(http.StatusBadRequest, err.Error(), err))
 			return
 		}
 
-		createdUser, err := h.userUsecase.CreateUser(c.Request.Context(), user)
+		user := model.User{
+			Username: requestParams.Username,
+			Email:    requestParams.Email,
+			Password: requestParams.Password,
+		}
+
+		createdUser, err := h.userUsecase.CreateUser(c.Request.Context(), &user)
 		if err != nil {
 			if err == common.BadRequest {
-				c.JSON(http.StatusBadRequest, common.NewRestResp(http.StatusBadRequest, err.Error(), err))
+				c.JSON(http.StatusBadRequest, common.NewRestErr(http.StatusBadRequest, err.Error(), err))
+				return
+			} else if err == common.ExistsEmailError {
+				c.JSON(http.StatusBadRequest, common.NewRestErr(http.StatusBadRequest, err.Error(), err))
 				return
 			}
-			c.JSON(http.StatusInternalServerError, common.NewRestResp(http.StatusInternalServerError, err.Error(), err))
+			c.JSON(http.StatusInternalServerError, common.NewRestErr(http.StatusInternalServerError, err.Error(), err))
 			return
 		}
 
 		createdUser.Sanitize()
 
-		c.JSON(http.StatusOK, common.NewRestResp(http.StatusOK, "success", createdUser))
+		c.JSON(http.StatusCreated, createdUser)
 	}
 }

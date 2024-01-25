@@ -5,5 +5,5 @@ create table verify_emails (
     is_used boolean default false,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
-    expried_at timestamp default (current_timestamp + interval 10 minute)
+    expired_at timestamp default (current_timestamp + interval 10 minute) 
 )

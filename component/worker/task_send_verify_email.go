@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	usermodel "quizen/module/user/model"
+	"time"
 
 	"encoding/json"
 
@@ -56,6 +57,7 @@ func (p *RedisTaskProcessor) ProcessTaskSendVerifyEmail(ctx context.Context, t *
 	vEmail, err := p.ustore.CreateVerifyEmail(ctx, &usermodel.VerifyEmail{
 		Email:      payload.Email,
 		SecretCode: payload.Code,
+		ExpriedAt:  time.Now().Add(10 * time.Minute),
 	})
 
 	if err != nil {

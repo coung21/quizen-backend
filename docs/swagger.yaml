@@ -69,6 +69,8 @@ info:
 paths:
   /users/register:
     post:
+      consumes:
+      - application/json
       description: Register a new user and send a verification email
       parameters:
       - description: User info

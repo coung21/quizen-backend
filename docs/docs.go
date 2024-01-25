@@ -18,6 +18,9 @@ const docTemplate = `{
         "/users/register": {
             "post": {
                 "description": "Register a new user and send a verification email",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],

@@ -18,6 +18,7 @@ type createUserRequest struct {
 // @Summary Register a new user
 // @Description Register a new user and send a verification email
 // @Tags user
+// @Accept application/json
 // @Produce application/json
 // @Param user body createUserRequest true "User info"
 // @Success 201 {object} model.User "Success"

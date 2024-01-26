@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	usermodel "quizen/module/user/model"
+	"time"
 
 	"encoding/json"
 
@@ -56,6 +57,7 @@ func (p *RedisTaskProcessor) ProcessTaskSendVerifyEmail(ctx context.Context, t *
 	vEmail, err := p.ustore.CreateVerifyEmail(ctx, &usermodel.VerifyEmail{
 		Email:      payload.Email,
 		SecretCode: payload.Code,
+		ExpriedAt:  time.Now().Add(10 * time.Minute),
 	})
 
 	if err != nil {
@@ -63,7 +65,7 @@ func (p *RedisTaskProcessor) ProcessTaskSendVerifyEmail(ctx context.Context, t *
 	}
 
 	subject := "Welcome to Quizen"
-	verifyUrl := fmt.Sprintf("%s/verify-email?email=%s&code=%s", "http://localhost:8080", vEmail.Email, vEmail.SecretCode)
+	verifyUrl := fmt.Sprintf("%s/verify-email?email=%s&code=%s", "http://localhost:8080/v1/users", vEmail.Email, vEmail.SecretCode)
 	content := fmt.Sprintf("Hi %s, <br> Welcome to Quizen. <br> Please verify your email by clicking this link: <a href=\"%s\">Verify</a>", payload.Username, verifyUrl)
 	to := []string{payload.Email}
 

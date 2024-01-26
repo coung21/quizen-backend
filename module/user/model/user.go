@@ -8,9 +8,9 @@ import (
 
 type User struct {
 	common.SQLModel
-	Username  string        `json:"username" gorm:"column:username" validate:"required,min=6,max=100"`
-	Email     string        `json:"email" gorm:"column:email" validate:"required,email"`
-	Password  string        `json:"password,omitempty" gorm:"column:password" validate:"required,min=6,max=100"`
+	Username  string        `json:"username" gorm:"column:username"`
+	Email     string        `json:"email" gorm:"column:email"`
+	Password  string        `json:"password,omitempty" gorm:"column:password"`
 	Avatar    *common.Image `json:"avatar" gorm:"column:avatar"`
 	IsVerifed bool          `json:"is_verified" gorm:"column:is_verified"`
 }

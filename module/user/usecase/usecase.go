@@ -9,6 +9,7 @@ import (
 
 type Usecase interface {
 	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
+	VerifyEmail(ctx context.Context, email, secretCode string) (*model.VerifyEmail, error)
 }
 
 type userUsecase struct {

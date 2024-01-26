@@ -9,21 +9,26 @@ import (
 )
 
 type UpdateUserParam struct {
-	Password   *string
+	Password   string
 	Avatar     *common.Image
-	IsVerified *bool
+	IsVerified bool
 }
 
-func (s *UserStore) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
+func (s UserStore) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
 	if err := s.db.Create(user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (s *UserStore) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
+func (s UserStore) GetUser(ctx context.Context, conditions map[string]interface{}, moreInfos ...string) (*model.User, error) {
+	s.db.Begin()
+	for _, info := range moreInfos {
+		s.db = s.db.Preload(info)
+	}
+
 	var user model.User
-	if err := s.db.Where("email = ?", email).First(&user).Error; err != nil {
+	if err := s.db.Where(conditions).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, common.NotFound
 		}
@@ -32,24 +37,13 @@ func (s *UserStore) GetUserByEmail(ctx context.Context, email string) (*model.Us
 	return &user, nil
 }
 
-func (s *UserStore) GetUserById(ctx context.Context, id int) (*model.User, error) {
-	var user model.User
-	if err := s.db.Where("id = ?", id).First(&user).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, common.NotFound
-		}
-		return nil, err
-	}
-	return &user, nil
-}
-
-func (s *UserStore) UpdateUser(ctx context.Context, id int, user *model.User) (*model.User, error) {
+func (s UserStore) UpdateUser(ctx context.Context, conditions map[string]interface{}, user *model.User) (*model.User, error) {
 	param := UpdateUserParam{
-		Password:   &user.Password,
+		Password:   user.Password,
 		Avatar:     user.Avatar,
-		IsVerified: &user.IsVerifed,
+		IsVerified: user.IsVerifed,
 	}
-	if err := s.db.Model(&user).Where("id = ?", id).Updates(param).Error; err != nil {
+	if err := s.db.Model(&user).Where(conditions).Updates(param).Error; err != nil {
 		return nil, err
 	}
 	return user, nil

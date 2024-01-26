@@ -16,4 +16,5 @@ func NewHTTPHandler(userUsecase usecase.Usecase) httpHandler {
 
 func InitializeUserRoutes(hdl httpHandler, router *gin.RouterGroup) {
 	router.POST("/register", hdl.CreateUserHandler())
+	router.GET("/verify-email", hdl.VerifyEmailHdl())
 }

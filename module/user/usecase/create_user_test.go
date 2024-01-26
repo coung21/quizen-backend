@@ -20,7 +20,7 @@ func TestCreateUser(t *testing.T) {
 	userStoreMock := mock.UserStoreMock{}
 	taskDistributorMock := mock.TaskDistributorMock{}
 
-	userStoreMock.GetUserByEmailFn = func(ctx context.Context, email string) (*model.User, error) {
+	userStoreMock.GetUserFn = func(ctx context.Context, conditions map[string]interface{}, moreInfos ...string) (*model.User, error) {
 		var result *model.User
 
 		userArr := []model.User{
@@ -29,7 +29,7 @@ func TestCreateUser(t *testing.T) {
 		}
 
 		for _, user := range userArr {
-			if user.Email == email {
+			if user.Email == conditions["email"] {
 				result = &user
 				break
 			}
@@ -38,6 +38,7 @@ func TestCreateUser(t *testing.T) {
 		if result == nil {
 			return nil, common.NotFound
 		}
+
 		return result, nil
 	}
 	userStoreMock.CreateUserFn = func(ctx context.Context, user *model.User) (*model.User, error) {
@@ -54,7 +55,7 @@ func TestCreateUser(t *testing.T) {
 	}
 
 	// Dependency injection
-	userUsecase := NewUserUsecase(&userStoreMock, &taskDistributorMock)
+	userUsecase := NewUserUsecase(userStoreMock, &taskDistributorMock)
 
 	// Assertion
 	t.Run("Create user success", func(t *testing.T) {

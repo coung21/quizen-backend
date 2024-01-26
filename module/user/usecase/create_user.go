@@ -11,7 +11,7 @@ import (
 )
 
 func (uc userUsecase) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
-	fUser, _ := uc.userStore.GetUserByEmail(ctx, user.Email)
+	fUser, _ := uc.userStore.GetUser(ctx, map[string]interface{}{"email": user.Email})
 	if fUser != nil {
 		return nil, common.ExistsEmailError
 	}

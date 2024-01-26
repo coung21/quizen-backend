@@ -60,6 +60,51 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/verify-email": {
+            "get": {
+                "description": "Verify email with code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Verify email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrResp"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -96,11 +141,6 @@ const docTemplate = `{
         },
         "model.User": {
             "type": "object",
-            "required": [
-                "email",
-                "password",
-                "username"
-            ],
             "properties": {
                 "avatar": {
                     "$ref": "#/definitions/common.Image"
@@ -118,17 +158,13 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "password": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 6
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
                 },
                 "username": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 6
+                    "type": "string"
                 }
             }
         },

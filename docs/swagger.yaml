@@ -33,19 +33,11 @@ definitions:
       is_verified:
         type: boolean
       password:
-        maxLength: 100
-        minLength: 6
         type: string
       updated_at:
         type: string
       username:
-        maxLength: 100
-        minLength: 6
         type: string
-    required:
-    - email
-    - password
-    - username
     type: object
   transport.createUserRequest:
     properties:
@@ -95,6 +87,36 @@ paths:
           schema:
             $ref: '#/definitions/common.ErrResp'
       summary: Register a new user
+      tags:
+      - user
+  /users/verify-email:
+    get:
+      consumes:
+      - application/json
+      description: Verify email with code
+      parameters:
+      - description: Email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: Code
+        in: query
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+      summary: Verify email
       tags:
       - user
 swagger: "2.0"

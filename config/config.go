@@ -6,16 +6,19 @@ import (
 
 // Config is the configuration for the application
 type Config struct {
-	ServerAddress       string `mapstructure:"SERVER_ADDRESS"`
-	MysqlUser           string `mapstructure:"MYSQL_USER"`
-	MysqlPassword       string `mapstructure:"MYSQL_PASSWORD"`
-	MysqlDb             string `mapstructure:"MYSQL_DB"`
-	MysqlHost           string `mapstructure:"MYSQL_HOST"`
-	MysqlPort           string `mapstructure:"MYSQL_PORT"`
-	RedisAddress        string `mapstructure:"REDIS_ADDRESS"`
-	EmailSenderName     string `mapstructure:"EMAIL_SENDER_NAME"`
-	EmailSenderAddress  string `mapstructure:"EMAIL_SENDER_ADDRESS"`
-	EmailSenderPassword string `mapstructure:"EMAIL_SENDER_PASSWORD"`
+	ServerAddress        string `mapstructure:"SERVER_ADDRESS"`
+	SecretKey            string `mapstructure:"SECRET_KEY"`
+	AccessTokenDuration  int    `mapstructure:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration int    `mapstructure:"REFRESH_TOKEN_DURATION"`
+	MysqlUser            string `mapstructure:"MYSQL_USER"`
+	MysqlPassword        string `mapstructure:"MYSQL_PASSWORD"`
+	MysqlDb              string `mapstructure:"MYSQL_DB"`
+	MysqlHost            string `mapstructure:"MYSQL_HOST"`
+	MysqlPort            string `mapstructure:"MYSQL_PORT"`
+	RedisAddress         string `mapstructure:"REDIS_ADDRESS"`
+	EmailSenderName      string `mapstructure:"EMAIL_SENDER_NAME"`
+	EmailSenderAddress   string `mapstructure:"EMAIL_SENDER_ADDRESS"`
+	EmailSenderPassword  string `mapstructure:"EMAIL_SENDER_PASSWORD"`
 }
 
 // LoadConfig loads the config from the environment

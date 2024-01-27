@@ -9,7 +9,7 @@ import (
 )
 
 type TokenProvider interface {
-	GenerateTokens(payload *TokenPayload) (*Token, *Token, error)
+	GenerateTokens(payload *TokenPayload) (*string, *string, error)
 	Validate(myToken string) (*Claims, error)
 	NewPayLoad(id int) *TokenPayload
 }
@@ -35,11 +35,6 @@ type Claims struct {
 	jwt.RegisteredClaims
 	ID int `json:"user_id"`
 }
-type Token struct {
-	Token   string    `json:"token"`
-	Created time.Time `json:"token_created"`
-	Expiry  int       `json:"token_expiry"`
-}
 
 func (j jwtProvider) NewPayLoad(id int) *TokenPayload {
 	return &TokenPayload{
@@ -47,7 +42,7 @@ func (j jwtProvider) NewPayLoad(id int) *TokenPayload {
 	}
 }
 
-func (j jwtProvider) GenerateTokens(payload *TokenPayload) (*Token, *Token, error) {
+func (j jwtProvider) GenerateTokens(payload *TokenPayload) (*string, *string, error) {
 	now := time.Now()
 
 	// Generate access token
@@ -79,18 +74,8 @@ func (j jwtProvider) GenerateTokens(payload *TokenPayload) (*Token, *Token, erro
 	}
 
 	// Create token objects
-	accessTokenObj := &Token{
-		Token:   accessTokenString,
-		Created: now,
-		Expiry:  j.accessExpiry,
-	}
-	refreshTokenObj := &Token{
-		Token:   refreshTokenString,
-		Created: now,
-		Expiry:  j.refreshExpiry,
-	}
 
-	return accessTokenObj, refreshTokenObj, nil
+	return &accessTokenString, &refreshTokenString, nil
 }
 func (j jwtProvider) Validate(myToken string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(myToken, &Claims{}, func(token *jwt.Token) (interface{}, error) {

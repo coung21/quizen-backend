@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"quizen/component/token"
 	"quizen/module/user/mock"
 	"quizen/module/user/model"
 	"quizen/module/user/store"
@@ -32,8 +33,10 @@ func TestVerifyEmail(t *testing.T) {
 		}, nil
 	}
 
+	tokenProvider := token.NewJWTProvider("aaaa", 1, 1)
+
 	//Test
-	userUsecase := NewUserUsecase(&userStoreMock, nil)
+	userUsecase := NewUserUsecase(&userStoreMock, nil, tokenProvider)
 
 	t.Run("Success", func(t *testing.T) {
 		email := "user1@gg.com"

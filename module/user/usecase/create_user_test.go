@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"quizen/common"
+	"quizen/component/token"
 	"quizen/component/worker"
 	"quizen/module/user/mock"
 	"quizen/module/user/model"
@@ -54,8 +55,10 @@ func TestCreateUser(t *testing.T) {
 		return nil
 	}
 
+	tokenProvider := token.NewJWTProvider("aaaa", 1, 1)
+
 	// Dependency injection
-	userUsecase := NewUserUsecase(userStoreMock, &taskDistributorMock)
+	userUsecase := NewUserUsecase(userStoreMock, &taskDistributorMock, tokenProvider)
 
 	// Assertion
 	t.Run("Create user success", func(t *testing.T) {

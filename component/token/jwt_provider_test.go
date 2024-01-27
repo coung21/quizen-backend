@@ -35,7 +35,7 @@ func TestTokenProvider(t *testing.T) {
 		accessToken, _, err := TokenProvider.GenerateTokens(&payload)
 		assert.NoError(t, err, "GenerateTokens() error")
 
-		claims, err := TokenProvider.Validate(accessToken.Token)
+		claims, err := TokenProvider.Validate(*accessToken)
 		assert.NoError(t, err, "Validate() error")
 		assert.NotNil(t, claims, "Validate() claims")
 	})

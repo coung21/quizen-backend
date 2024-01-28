@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"quizen/component/mail"
+	"quizen/component/token"
 	"quizen/component/worker"
 	"quizen/config"
 	"quizen/db"
@@ -56,10 +57,11 @@ func main() {
 		panic(err)
 	}
 
+	tokenProvider := token.NewJWTProvider(config.SecretKey, config.AccessTokenDuration, config.RefreshTokenDuration)
 	taskDistributor := worker.NewRedisTaskDistributor(asynq.RedisClientOpt{Addr: config.RedisAddress})
 
 	userStore := userstore.NewUserStore(mdb)
-	userUc := useruc.NewUserUsecase(userStore, taskDistributor)
+	userUc := useruc.NewUserUsecase(userStore, taskDistributor, tokenProvider)
 	userTransport.InitializeUserRoutes(userTransport.NewHTTPHandler(userUc), r.Group("/v1/users"))
 
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)

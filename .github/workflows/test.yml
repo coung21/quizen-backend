@@ -27,6 +27,8 @@ jobs:
         echo "SERVER_ADDRESS=${{ secrets.SERVER_ADDRESS }}" >> .env
         echo "REDIS_ADDRESS=${{ secrets.REDIS_ADDRESS }}" >> .env
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "ACCESS_TOKEN_DURATION=${{ secrets.ACCESS_TOKEN_DURATION }}" >> .env
+        echo "REFRESH_TOKEN_DURATION=${{ secrets.REFRESH_TOKEN_DURATION }}" >> .env
         echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
         echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
         echo "MYSQL_DB=${{ secrets.MYSQL_DB }}" >> .env

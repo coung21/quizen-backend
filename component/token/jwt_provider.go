@@ -9,12 +9,22 @@ import (
 )
 
 type TokenProvider interface {
-	GenerateToken(payload *TokenPayload, expiry int) (*Token, error)
+	GenerateTokens(payload *TokenPayload) (*string, *string, error)
 	Validate(myToken string) (*Claims, error)
-	NewPayLoad(id int, role string) *TokenPayload
+	NewPayLoad(id int) *TokenPayload
 }
 type jwtProvider struct {
-	secret string
+	secret        string
+	accessExpiry  int
+	refreshExpiry int
+}
+
+func NewJWTProvider(secret string, accessExpiry, refreshExpiry int) TokenProvider {
+	return jwtProvider{
+		secret:        secret,
+		accessExpiry:  accessExpiry,
+		refreshExpiry: refreshExpiry,
+	}
 }
 
 type TokenPayload struct {
@@ -25,42 +35,49 @@ type Claims struct {
 	jwt.RegisteredClaims
 	ID int `json:"user_id"`
 }
-type Token struct {
-	Token   string    `json:"token"`
-	Created time.Time `json:"token_created"`
-	Expiry  int       `json:"token_expiry"`
-}
 
-func (j *jwtProvider) NewPayLoad(id int, role string) *TokenPayload {
+func (j jwtProvider) NewPayLoad(id int) *TokenPayload {
 	return &TokenPayload{
 		ID: id,
 	}
 }
 
-func (j *jwtProvider) GenerateToken(payload *TokenPayload, expiry int) (*Token, error) {
+func (j jwtProvider) GenerateTokens(payload *TokenPayload) (*string, *string, error) {
 	now := time.Now()
-	t := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+
+	// Generate access token
+	accessTokenClaims := Claims{
 		ID: payload.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(now.Add(time.Hour * time.Duration(expiry))),
-
-			ID: fmt.Sprintf("%d", now.UnixNano()),
+			ExpiresAt: jwt.NewNumericDate(now.Add(time.Hour * time.Duration(j.accessExpiry))),
+			ID:        fmt.Sprintf("%d", now.UnixNano()),
 		},
-	})
-
-	aToken, err := t.SignedString([]byte(j.secret))
+	}
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims)
+	accessTokenString, err := accessToken.SignedString([]byte(j.secret))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return &Token{
-		Token:   aToken,
-		Created: now,
-		Expiry:  expiry,
-	}, nil
-}
+	// Generate refresh token
+	refreshTokenClaims := Claims{
+		ID: payload.ID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(now.Add(time.Hour * time.Duration(j.refreshExpiry))),
+			ID:        fmt.Sprintf("%d", now.UnixNano()),
+		},
+	}
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims)
+	refreshTokenString, err := refreshToken.SignedString([]byte(j.secret))
+	if err != nil {
+		return nil, nil, err
+	}
 
-func (j *jwtProvider) Validate(myToken string) (*Claims, error) {
+	// Create token objects
+
+	return &accessTokenString, &refreshTokenString, nil
+}
+func (j jwtProvider) Validate(myToken string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(myToken, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(j.secret), nil
 	})

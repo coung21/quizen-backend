@@ -12,7 +12,7 @@ type tokensResp struct {
 }
 
 func (u userUsecase) Login(ctx context.Context, email, password string) (*model.User, *tokensResp, error) {
-	foundUser, err := u.userStore.GetUser(ctx, map[string]interface{}{"email": email})
+	foundUser, err := u.userStore.GetUser(ctx, map[string]interface{}{"email": email, "is_verified": true})
 	if foundUser == nil && err != nil {
 		return nil, nil, common.NotExistAccount
 	}

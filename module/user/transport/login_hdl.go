@@ -37,6 +37,8 @@ func (h httpHandler) LoginHdl() gin.HandlerFunc {
 			return
 		}
 
+		user.Sanitize()
+
 		resp := LoginResp{
 			User: *user,
 			Token: struct {

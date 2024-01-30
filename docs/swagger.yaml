@@ -112,6 +112,39 @@ paths:
       summary: Login
       tags:
       - user
+  /users/logout/{session_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Logout
+      parameters:
+      - description: session_id
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+      summary: Logout
+      tags:
+      - user
   /users/register:
     post:
       consumes:

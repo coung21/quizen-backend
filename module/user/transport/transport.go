@@ -18,4 +18,5 @@ func InitializeUserRoutes(hdl httpHandler, router *gin.RouterGroup) {
 	router.POST("/register", hdl.CreateUserHandler())
 	router.GET("/verify-email", hdl.VerifyEmailHdl())
 	router.POST("/login", hdl.LoginHdl())
+	router.DELETE("/logout/:session_id", hdl.LogoutHdl())
 }

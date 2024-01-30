@@ -59,13 +59,17 @@ func TestLogin(t *testing.T) {
 
 	tokenProvider := token.NewJWTProvider("aaaa", 1, 1)
 
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "user_agent", "user_agent")
+	ctx = context.WithValue(ctx, "user_ip", "user_ip")
 	//inject mock
 	userUsecase := NewUserUsecase(&userStoreMock, nil, tokenProvider)
 
 	t.Run("Success", func(t *testing.T) {
+
 		email := "user1@gg.com"
 		password := "password"
-		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(context.Background(), email, password)
+		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(ctx, email, password)
 
 		assert.Nilf(t, err, "error should be nil")
 		assert.NotEmptyf(t, gotSessionID, "sessionID should not be empty")
@@ -78,7 +82,7 @@ func TestLogin(t *testing.T) {
 	t.Run("Wrong password", func(t *testing.T) {
 		email := "user1@gg.com"
 		password := "wrongpassword"
-		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(context.Background(), email, password)
+		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(ctx, email, password)
 
 		assert.Equalf(t, common.WrongPassword, err, "error should be WrongPassword")
 		assert.Emptyf(t, gotSessionID, "sessionID should be empty")
@@ -89,7 +93,7 @@ func TestLogin(t *testing.T) {
 	t.Run("Not exist account", func(t *testing.T) {
 		email := "user3@gg.cpm"
 		password := "password"
-		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(context.Background(), email, password)
+		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(ctx, email, password)
 
 		assert.Equalf(t, common.NotExistAccount, err, "error should be NotExistAccount")
 		assert.Emptyf(t, gotSessionID, "sessionID should be empty")

@@ -11,7 +11,7 @@ import (
 type Usecase interface {
 	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
 	VerifyEmail(ctx context.Context, email, secretCode string) (*model.VerifyEmail, error)
-	Login(ctx context.Context, email, password string) (*model.User, *tokensResp, error)
+	Login(ctx context.Context, email, password string) (*model.User, *tokensResp, string, error)
 }
 
 type userUsecase struct {

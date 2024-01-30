@@ -43,17 +43,36 @@ func TestLogin(t *testing.T) {
 		return result, nil
 	}
 
+	userStoreMock.CreateSessionFn = func(ctx context.Context, session *model.Session) (*model.Session, error) {
+
+		return &model.Session{
+			ID:           uuid.New(),
+			UserID:       session.UserID,
+			RefreshToken: session.RefreshToken,
+			UserAgent:    session.UserAgent,
+			UserIP:       session.UserIP,
+			ExpiresAt:    session.ExpiresAt,
+			CreatedAt:    now,
+			UpdatedAt:    now,
+		}, nil
+	}
+
 	tokenProvider := token.NewJWTProvider("aaaa", 1, 1)
 
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "user_agent", "user_agent")
+	ctx = context.WithValue(ctx, "user_ip", "user_ip")
 	//inject mock
 	userUsecase := NewUserUsecase(&userStoreMock, nil, tokenProvider)
 
 	t.Run("Success", func(t *testing.T) {
+
 		email := "user1@gg.com"
 		password := "password"
-		gotUser, gotTokens, err := userUsecase.Login(context.Background(), email, password)
+		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(ctx, email, password)
 
 		assert.Nilf(t, err, "error should be nil")
+		assert.NotEmptyf(t, gotSessionID, "sessionID should not be empty")
 		assert.Equalf(t, email, gotUser.Email, "email should be equal")
 		assert.Equalf(t, "user1", gotUser.Username, "username should be equal")
 		assert.NotEmptyf(t, gotTokens.AccessToken, "accessToken should not be empty")
@@ -63,9 +82,10 @@ func TestLogin(t *testing.T) {
 	t.Run("Wrong password", func(t *testing.T) {
 		email := "user1@gg.com"
 		password := "wrongpassword"
-		gotUser, gotTokens, err := userUsecase.Login(context.Background(), email, password)
+		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(ctx, email, password)
 
 		assert.Equalf(t, common.WrongPassword, err, "error should be WrongPassword")
+		assert.Emptyf(t, gotSessionID, "sessionID should be empty")
 		assert.Nilf(t, gotUser, "user should be nil")
 		assert.Nilf(t, gotTokens, "tokens should be nil")
 	})
@@ -73,9 +93,10 @@ func TestLogin(t *testing.T) {
 	t.Run("Not exist account", func(t *testing.T) {
 		email := "user3@gg.cpm"
 		password := "password"
-		gotUser, gotTokens, err := userUsecase.Login(context.Background(), email, password)
+		gotUser, gotTokens, gotSessionID, err := userUsecase.Login(ctx, email, password)
 
 		assert.Equalf(t, common.NotExistAccount, err, "error should be NotExistAccount")
+		assert.Emptyf(t, gotSessionID, "sessionID should be empty")
 		assert.Nilf(t, gotUser, "user should be nil")
 		assert.Nilf(t, gotTokens, "tokens should be nil")
 	})

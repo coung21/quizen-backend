@@ -3,6 +3,9 @@ package model
 import (
 	"quizen/common"
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type VerifyEmail struct {
@@ -15,4 +18,9 @@ type VerifyEmail struct {
 
 func (VerifyEmail) TableName() string {
 	return "verify_emails"
+}
+
+func (e *VerifyEmail) BeforeCreate(tx *gorm.DB) error {
+	e.ID = uuid.New()
+	return nil
 }

@@ -6,12 +6,13 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 type TokenProvider interface {
 	GenerateTokens(payload *TokenPayload) (*string, *string, error)
 	Validate(myToken string) (*Claims, error)
-	NewPayLoad(id int) *TokenPayload
+	NewPayLoad(id uuid.UUID) *TokenPayload
 }
 type jwtProvider struct {
 	secret        string
@@ -28,15 +29,15 @@ func NewJWTProvider(secret string, accessExpiry, refreshExpiry int) TokenProvide
 }
 
 type TokenPayload struct {
-	ID int `json:"user_id"`
+	ID uuid.UUID `json:"user_id"`
 }
 
 type Claims struct {
 	jwt.RegisteredClaims
-	ID int `json:"user_id"`
+	ID uuid.UUID `json:"user_id"`
 }
 
-func (j jwtProvider) NewPayLoad(id int) *TokenPayload {
+func (j jwtProvider) NewPayLoad(id uuid.UUID) *TokenPayload {
 	return &TokenPayload{
 		ID: id,
 	}

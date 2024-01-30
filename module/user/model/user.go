@@ -3,7 +3,9 @@ package model
 import (
 	"quizen/common"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -33,4 +35,10 @@ func (u *User) ComparePassword(password string) error {
 
 func (u *User) Sanitize() {
 	u.Password = ""
+}
+
+// gorm uuid genarate hook
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	u.ID = uuid.New()
+	return nil
 }

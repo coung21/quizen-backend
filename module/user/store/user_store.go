@@ -46,5 +46,6 @@ func (s UserStore) UpdateUser(ctx context.Context, conditions map[string]interfa
 	if err := s.db.Model(&user).Where(conditions).Updates(param).Error; err != nil {
 		return nil, err
 	}
+
 	return user, nil
 }

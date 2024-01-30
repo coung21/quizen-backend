@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,8 +26,8 @@ func TestCreateUser(t *testing.T) {
 		var result *model.User
 
 		userArr := []model.User{
-			{SQLModel: common.SQLModel{ID: 1, CreatedAt: &now, UpdatedAt: &now}, Username: "user1", Email: "user1@gg.com", Password: "password"},
-			{SQLModel: common.SQLModel{ID: 2, CreatedAt: &now, UpdatedAt: &now}, Username: "user2", Email: "user2@gg.com", Password: "password"},
+			{SQLModel: common.SQLModel{ID: uuid.New(), CreatedAt: &now, UpdatedAt: &now}, Username: "user1", Email: "user1@gg.com", Password: "password"},
+			{SQLModel: common.SQLModel{ID: uuid.New(), CreatedAt: &now, UpdatedAt: &now}, Username: "user2", Email: "user2@gg.com", Password: "password"},
 		}
 
 		for _, user := range userArr {

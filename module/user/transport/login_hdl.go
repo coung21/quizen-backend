@@ -25,6 +25,17 @@ type LoginResp struct {
 	} `json:"token"`
 }
 
+// LoginHdl godoc
+// @Summary Login
+// @Description Login
+// @Tags user
+// @Accept application/json
+// @Produce application/json
+// @Param user body LoginReq true "email and password"
+// @Success 200 {object} LoginResp "Success"
+// @Failure 400 {object} common.ErrResp "Bad Request"
+// @Failure 500 {object} common.ErrResp "Internal Server Error"
+// @Router /users/login [post]
 func (h httpHandler) LoginHdl() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var loginReq LoginReq

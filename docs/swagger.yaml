@@ -29,7 +29,7 @@ definitions:
       email:
         type: string
       id:
-        type: integer
+        type: string
       is_verified:
         type: boolean
       password:
@@ -38,6 +38,29 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  transport.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  transport.LoginResp:
+    properties:
+      session_id:
+        type: string
+      token:
+        properties:
+          access_token:
+            type: string
+          refresh_token:
+            type: string
+          refresh_token_exp:
+            type: string
+        type: object
+      user:
+        $ref: '#/definitions/model.User'
     type: object
   transport.createUserRequest:
     properties:
@@ -59,6 +82,36 @@ info:
   title: Quizen API
   version: "1.0"
 paths:
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: email and password
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/transport.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/transport.LoginResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+      summary: Login
+      tags:
+      - user
   /users/register:
     post:
       consumes:

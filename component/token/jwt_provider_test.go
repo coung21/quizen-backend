@@ -3,6 +3,7 @@ package token
 import (
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,7 +12,7 @@ func TestTokenProvider(t *testing.T) {
 
 	t.Run("GenerateTokens", func(t *testing.T) {
 		payload := TokenPayload{
-			ID: 1,
+			ID: uuid.New(),
 		}
 
 		accessToken, refreshToken, err := TokenProvider.GenerateTokens(&payload)
@@ -22,14 +23,14 @@ func TestTokenProvider(t *testing.T) {
 	})
 
 	t.Run("NewPayLoad", func(t *testing.T) {
-		payload := TokenProvider.NewPayLoad(1)
+		payload := TokenProvider.NewPayLoad(uuid.New())
 
 		assert.NotNil(t, payload, "NewPayLoad() payload")
 	})
 
 	t.Run("Validate", func(t *testing.T) {
 		payload := TokenPayload{
-			ID: 1,
+			ID: uuid.New(),
 		}
 
 		accessToken, _, err := TokenProvider.GenerateTokens(&payload)

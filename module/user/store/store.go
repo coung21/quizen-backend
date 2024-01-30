@@ -14,6 +14,9 @@ type Store interface {
 	UpdateUser(ctx context.Context, conditions map[string]interface{}, user *model.User) (*model.User, error)
 	CreateVerifyEmail(ctx context.Context, verifyEmail *model.VerifyEmail) (*model.VerifyEmail, error)
 	UpdateVerifyEmail(ctx context.Context, email, secretCode string) (*model.VerifyEmail, error)
+	CreateSession(ctx context.Context, session *model.Session) (*model.Session, error)
+	GetSession(ctx context.Context, conditions map[string]interface{}, moreInfos ...string) (*model.Session, error)
+	DeleteSession(ctx context.Context, conditions map[string]interface{}) error
 }
 
 type UserStore struct {

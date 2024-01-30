@@ -1,9 +1,11 @@
 package transport
 
 import (
+	"context"
 	"net/http"
 	"quizen/common"
 	"quizen/module/user/model"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,10 +16,12 @@ type LoginReq struct {
 }
 
 type LoginResp struct {
-	User  model.User `json:"user"`
-	Token struct {
-		AccessToken  string `json:"access_token"`
-		RefreshToken string `json:"refresh_token"`
+	User      model.User `json:"user"`
+	SessionID string     `json:"session_id"`
+	Token     struct {
+		AccessToken     string    `json:"access_token"`
+		RefreshToken    string    `json:"refresh_token"`
+		RefreshTokenExp time.Time `json:"refresh_token_exp"`
 	} `json:"token"`
 }
 
@@ -30,7 +34,12 @@ func (h httpHandler) LoginHdl() gin.HandlerFunc {
 			return
 		}
 
-		user, tokens, err := h.userUsecase.Login(c.Request.Context(), loginReq.Email, loginReq.Password)
+		ctx := c.Request.Context()
+
+		ctx = context.WithValue(ctx, "user_agent", c.Request.UserAgent())
+		ctx = context.WithValue(ctx, "user_ip", c.ClientIP())
+
+		user, tokens, sessionID, err := h.userUsecase.Login(ctx, loginReq.Email, loginReq.Password)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, common.NewRestErr(http.StatusBadRequest, err.Error(), err))
@@ -40,13 +49,16 @@ func (h httpHandler) LoginHdl() gin.HandlerFunc {
 		user.Sanitize()
 
 		resp := LoginResp{
-			User: *user,
+			User:      *user,
+			SessionID: sessionID,
 			Token: struct {
-				AccessToken  string `json:"access_token"`
-				RefreshToken string `json:"refresh_token"`
+				AccessToken     string    `json:"access_token"`
+				RefreshToken    string    `json:"refresh_token"`
+				RefreshTokenExp time.Time `json:"refresh_token_exp"`
 			}{
-				AccessToken:  tokens.AccessToken,
-				RefreshToken: tokens.RefreshToken,
+				AccessToken:     tokens.AccessToken,
+				RefreshToken:    tokens.RefreshToken,
+				RefreshTokenExp: tokens.RefreshTokenExp,
 			},
 		}
 

@@ -83,7 +83,7 @@ func (j jwtProvider) Validate(myToken string) (*Claims, error) {
 		return []byte(j.secret), nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, common.InvalidJWTToken
 	}
 
 	claims, ok := token.Claims.(*Claims)

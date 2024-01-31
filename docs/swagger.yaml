@@ -75,6 +75,21 @@ definitions:
     - password
     - username
     type: object
+  transport.renewTokenReq:
+    properties:
+      refresh_token:
+        type: string
+      session_id:
+        type: string
+    required:
+    - refresh_token
+    - session_id
+    type: object
+  transport.renewTokenResp:
+    properties:
+      access_token:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -173,6 +188,48 @@ paths:
           schema:
             $ref: '#/definitions/common.ErrResp'
       summary: Register a new user
+      tags:
+      - user
+  /users/renew-token:
+    post:
+      consumes:
+      - application/json
+      description: Renew access token
+      parameters:
+      - description: User info
+        in: body
+        name: ususer
+        required: true
+        schema:
+          $ref: '#/definitions/transport.renewTokenReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/transport.renewTokenResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+      summary: Renew access token
       tags:
       - user
   /users/verify-email:

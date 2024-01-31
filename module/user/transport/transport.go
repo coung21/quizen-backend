@@ -19,4 +19,5 @@ func InitializeUserRoutes(hdl httpHandler, router *gin.RouterGroup) {
 	router.GET("/verify-email", hdl.VerifyEmailHdl())
 	router.POST("/login", hdl.LoginHdl())
 	router.DELETE("/logout/:session_id", hdl.LogoutHdl())
+	router.POST("/renew-token", hdl.RenewTokenHdl())
 }

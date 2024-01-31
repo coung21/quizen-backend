@@ -13,6 +13,7 @@ type Usecase interface {
 	VerifyEmail(ctx context.Context, email, secretCode string) (*model.VerifyEmail, error)
 	Login(ctx context.Context, email, password string) (*model.User, *tokensResp, string, error)
 	Logout(ctx context.Context, sessionID string) error
+	RenewToken(ctx context.Context, sessionID string, refreshToken string) (string, error)
 }
 
 type userUsecase struct {

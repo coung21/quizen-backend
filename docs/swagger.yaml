@@ -97,6 +97,35 @@ info:
   title: Quizen API
   version: "1.0"
 paths:
+  /upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload file to S3
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Folder to save the file
+        in: formData
+        name: folder
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Image'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+      summary: Upload file
+      tags:
+      - upload
   /users/login:
     post:
       consumes:

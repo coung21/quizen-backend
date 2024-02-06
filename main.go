@@ -3,12 +3,15 @@ package main
 import (
 	"log"
 	"os"
+	"quizen/component/cloudstorage"
 	"quizen/component/mail"
 	"quizen/component/token"
 	"quizen/component/worker"
 	"quizen/config"
 	"quizen/db"
 	"quizen/middleware"
+	uploadTansport "quizen/module/upload/transport"
+	uploadUsecase "quizen/module/upload/usecase"
 	userstore "quizen/module/user/store"
 	userTransport "quizen/module/user/transport"
 	useruc "quizen/module/user/usecase"
@@ -63,6 +66,10 @@ func main() {
 	userStore := userstore.NewUserStore(mdb)
 	userUc := useruc.NewUserUsecase(userStore, taskDistributor, tokenProvider)
 	userTransport.InitializeUserRoutes(userTransport.NewHTTPHandler(userUc), r.Group("/v1/users"))
+
+	s3Provider := cloudstorage.NewS3Storage(config.S3BucketName, config.S3Region, config.S3AccessKey, config.S3SecretKey, config.S3Domain)
+	uploadUc := uploadUsecase.NewUploadUc(s3Provider)
+	uploadTansport.InitialzeUploadRoutes(uploadTansport.NewUploadHandler(uploadUc), r.Group("/v1/uploads"))
 
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress}, userStore, mailer)

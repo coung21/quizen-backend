@@ -19,6 +19,11 @@ type Config struct {
 	EmailSenderName      string `mapstructure:"EMAIL_SENDER_NAME"`
 	EmailSenderAddress   string `mapstructure:"EMAIL_SENDER_ADDRESS"`
 	EmailSenderPassword  string `mapstructure:"EMAIL_SENDER_PASSWORD"`
+	S3BucketName         string `mapstructure:"S3_BUCKET_NAME"`
+	S3Region             string `mapstructure:"S3_REGION"`
+	S3Domain             string `mapstructure:"S3_DOMAIN"`
+	S3AccessKey          string `mapstructure:"S3_ACCESS_KEY"`
+	S3SecretKey          string `mapstructure:"S3_SECRET_KEY"`
 }
 
 // LoadConfig loads the config from the environment

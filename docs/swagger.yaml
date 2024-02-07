@@ -20,6 +20,48 @@ definitions:
       width:
         type: integer
     type: object
+  model.Flashcard:
+    properties:
+      created_at:
+        type: string
+      definition:
+        type: string
+      id:
+        type: string
+      image:
+        $ref: '#/definitions/common.Image'
+      study_set_id:
+        type: string
+      term:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - definition
+    - term
+    type: object
+  model.StudySet:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      flashcards:
+        items:
+          $ref: '#/definitions/model.Flashcard'
+        type: array
+      id:
+        type: string
+      set_name:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    required:
+    - set_name
+    - user_id
+    type: object
   model.User:
     properties:
       avatar:
@@ -97,6 +139,32 @@ info:
   title: Quizen API
   version: "1.0"
 paths:
+  /study-set:
+    post:
+      consumes:
+      - application/json
+      description: Create a new study set
+      parameters:
+      - description: StudySet object that needs to be created
+        in: body
+        name: studySet
+        required: true
+        schema:
+          $ref: '#/definitions/model.StudySet'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.StudySet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+      summary: Create a new study set
+      tags:
+      - study-set
   /upload:
     post:
       consumes:

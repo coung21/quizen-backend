@@ -10,6 +10,9 @@ import (
 	"quizen/config"
 	"quizen/db"
 	"quizen/middleware"
+	flashcardstore "quizen/module/flashcard/store"
+	flashcardTransport "quizen/module/flashcard/transport"
+	flashcardUsecase "quizen/module/flashcard/usecase"
 	uploadTansport "quizen/module/upload/transport"
 	uploadUsecase "quizen/module/upload/usecase"
 	userstore "quizen/module/user/store"
@@ -70,6 +73,10 @@ func main() {
 	s3Provider := cloudstorage.NewS3Storage(config.S3BucketName, config.S3Region, config.S3AccessKey, config.S3SecretKey, config.S3Domain)
 	uploadUc := uploadUsecase.NewUploadUc(s3Provider)
 	uploadTansport.InitialzeUploadRoutes(uploadTansport.NewUploadHandler(uploadUc), r.Group("/v1/uploads"))
+
+	flashcardStore := flashcardstore.NewFlashcardStore(mdb)
+	flashcardUc := flashcardUsecase.NewFlashcardUseCase(flashcardStore)
+	flashcardTransport.InitializeFlashcardRoutes(flashcardTransport.NewHTTPHandler(flashcardUc), r.Group("/v1/"))
 
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress}, userStore, mailer)

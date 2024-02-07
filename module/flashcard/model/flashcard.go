@@ -9,6 +9,7 @@ import (
 
 type Flashcard struct {
 	common.SQLModel
+	StudySetID uuid.UUID     `json:"study_set_id" gorm:"column:study_set_id"`
 	Term       string        `json:"term" binding:"required" gorm:"column:term"`
 	Definition string        `json:"definition" binding:"required" gorm:"column:definition"`
 	Image      *common.Image `json:"image" gorm:"column:image"`

@@ -10,7 +10,7 @@ import (
 
 type StudySet struct {
 	common.SQLModel
-	UserID      uuid.UUID   `json:"user_id" gorm:"column:user_id" binding:"required"`
+	UserID      uuid.UUID   `json:"user_id" gorm:"column:user_id"`
 	SetName     string      `json:"set_name" binding:"required" gorm:"column:set_name"`
 	Description string      `json:"description" gorm:"column:description"`
 	Flashcards  []Flashcard `json:"flashcards"`

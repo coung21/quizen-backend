@@ -77,7 +77,7 @@ func main() {
 
 	userStore := userstore.NewUserStore(mdb)
 	userUc := useruc.NewUserUsecase(userStore, taskDistributor, tokenProvider)
-	userTransport.InitializeUserRoutes(userTransport.NewHTTPHandler(userUc), r.Group("/v1/users"))
+	userTransport.InitializeUserRoutes(userTransport.NewHTTPHandler(userUc), r.Group("/v1/users"), tokenProvider, userStore)
 
 	s3Provider := cloudstorage.NewS3Storage(config.S3BucketName, config.S3Region, config.S3AccessKey, config.S3SecretKey, config.S3Domain)
 	uploadUc := uploadUsecase.NewUploadUc(s3Provider)
@@ -85,7 +85,7 @@ func main() {
 
 	flashcardStore := flashcardstore.NewFlashcardStore(mdb)
 	flashcardUc := flashcardUsecase.NewFlashcardUseCase(flashcardStore)
-	flashcardTransport.InitializeFlashcardRoutes(flashcardTransport.NewHTTPHandler(flashcardUc), r.Group("/v1/"))
+	flashcardTransport.InitializeFlashcardRoutes(flashcardTransport.NewHTTPHandler(flashcardUc), r.Group("/v1/"), tokenProvider, userStore)
 
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress}, userStore, mailer)

@@ -6,6 +6,7 @@ import (
 	"quizen/module/flashcard/model"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // CreateStudySetHandler godoc
@@ -25,6 +26,8 @@ func (h httpHandler) CreateStudySetHandler() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, common.NewRestErr(http.StatusBadRequest, "invalid json body", nil))
 			return
 		}
+
+		studySet.UserID = c.Value(common.CtxValUserIdKey).(uuid.UUID)
 		createdStudySet, err := h.useCase.CreateStudySet(c, &studySet)
 		if err != nil {
 			if err == model.ErrFlashCardLen {

@@ -60,7 +60,6 @@ definitions:
         type: string
     required:
     - set_name
-    - user_id
     type: object
   model.User:
     properties:
@@ -151,6 +150,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.StudySet'
+      - description: Bearer + Access Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:

@@ -16,6 +16,7 @@ import (
 // @Accept  json
 // @Produce  json
 // @Param studySet body model.StudySet true "StudySet object that needs to be created"
+// @Param Authorization header string true "Bearer + Access Token"
 // @Success 201 {object} model.StudySet
 // @Failure 400 {object} common.ErrResp
 // @Router /study-set [post]

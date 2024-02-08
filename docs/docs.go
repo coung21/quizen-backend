@@ -37,6 +37,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.StudySet"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer + Access Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -416,8 +423,7 @@ const docTemplate = `{
         "model.StudySet": {
             "type": "object",
             "required": [
-                "set_name",
-                "user_id"
+                "set_name"
             ],
             "properties": {
                 "created_at": {

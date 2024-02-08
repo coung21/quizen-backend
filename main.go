@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
 	"quizen/component/cloudstorage"
 	"quizen/component/mail"
 	"quizen/component/token"
@@ -18,6 +21,7 @@ import (
 	userstore "quizen/module/user/store"
 	userTransport "quizen/module/user/transport"
 	useruc "quizen/module/user/usecase"
+	"syscall"
 	"time"
 
 	_ "quizen/docs"
@@ -51,6 +55,11 @@ func main() {
 		log.Fatal("cannot load config:", err)
 	}
 
+	srv := http.Server{
+		Addr:    config.ServerAddress,
+		Handler: r,
+	}
+
 	mdb, err := db.Connect(
 		config.MysqlUser,
 		config.MysqlPassword,
@@ -81,5 +90,21 @@ func main() {
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 	go worker.RunTaskProcessor(asynq.RedisClientOpt{Addr: config.RedisAddress}, userStore, mailer)
 
-	r.Run(config.ServerAddress)
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal(err)
+		}
+	}()
+
+	// Graceful shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+	<-quit
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server shutdown failed:", err)
+	}
 }

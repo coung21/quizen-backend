@@ -9,6 +9,7 @@ import (
 
 type Store interface {
 	CreateStudySet(ctx context.Context, studySet *model.StudySet) (*model.StudySet, error)
+	DeleteStudySet(ctx context.Context, studySetID string) error
 }
 
 type flashcardStore struct {

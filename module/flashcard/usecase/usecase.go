@@ -8,6 +8,7 @@ import (
 
 type UseCase interface {
 	CreateStudySet(ctx context.Context, studySet *model.StudySet) (*model.StudySet, error)
+	DeleteStudySet(ctx context.Context, studySetID string) error
 }
 
 type flashcardUseCase struct {

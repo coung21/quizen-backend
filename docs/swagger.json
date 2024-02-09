@@ -56,6 +56,54 @@
                 }
             }
         },
+        "/study-set/{id}": {
+            "delete": {
+                "description": "Delete a study set",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "study-set"
+                ],
+                "summary": "Delete a study set",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Study set ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer + Access Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Study set not found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete study set",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/upload": {
             "post": {
                 "description": "Upload file to S3",

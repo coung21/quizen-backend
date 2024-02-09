@@ -169,6 +169,38 @@ paths:
       summary: Create a new study set
       tags:
       - study-set
+  /study-set/{id}:
+    delete:
+      description: Delete a study set
+      parameters:
+      - description: Study set ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Bearer + Access Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+          schema:
+            type: string
+        "404":
+          description: Study set not found
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "500":
+          description: Failed to delete study set
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+      summary: Delete a study set
+      tags:
+      - study-set
   /upload:
     post:
       consumes:

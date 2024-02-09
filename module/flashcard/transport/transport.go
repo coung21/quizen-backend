@@ -20,4 +20,5 @@ func NewHTTPHandler(useCase usecase.UseCase) httpHandler {
 func InitializeFlashcardRoutes(h httpHandler, router *gin.RouterGroup, tokenprovider token.TokenProvider, store store.Store) {
 	auth := middleware.Auth(tokenprovider, store)
 	router.POST("/study-set", auth, h.CreateStudySetHandler())
+	router.DELETE("/study-set/:id", auth, h.DeleteStudySetHdl())
 }

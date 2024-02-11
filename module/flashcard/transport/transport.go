@@ -21,4 +21,5 @@ func InitializeFlashcardRoutes(h httpHandler, router *gin.RouterGroup, tokenprov
 	auth := middleware.Auth(tokenprovider, store)
 	router.POST("/study-set", auth, h.CreateStudySetHandler())
 	router.DELETE("/study-set/:id", auth, h.DeleteStudySetHdl())
+	router.PUT("/study-set", auth, h.UpdateStudySetHdl())
 }

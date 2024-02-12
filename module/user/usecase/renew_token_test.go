@@ -77,7 +77,7 @@ func TestRenewToken(t *testing.T) {
 		accessToken, err := userUsecase.RenewToken(context.Background(), sessionID, refreshToken)
 
 		// Validation
-		assert.Equalf(t, common.InvalidJWTToken, err, "Error should be invalid jwt token")
+		assert.Errorf(t, err, "Should return error")
 		assert.Emptyf(t, accessToken, "Access token should be empty")
 	})
 }

@@ -32,7 +32,7 @@ func Auth(tokenprovider token.TokenProvider, store store.Store) gin.HandlerFunc 
 		payload, err := tokenprovider.Validate(token)
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, common.NewRestErr(http.StatusUnauthorized, common.InvalidJWTToken.Error(), nil))
+			c.JSON(http.StatusUnauthorized, common.NewRestErr(http.StatusUnauthorized, err.Error(), err))
 			c.Abort()
 			return
 		}
@@ -40,7 +40,7 @@ func Auth(tokenprovider token.TokenProvider, store store.Store) gin.HandlerFunc 
 		user, err := store.GetUser(c.Request.Context(), map[string]interface{}{"id": payload.ID.String()})
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, common.NewRestErr(http.StatusUnauthorized, common.InvalidJWTToken.Error(), nil))
+			c.JSON(http.StatusUnauthorized, common.NewRestErr(http.StatusUnauthorized, err.Error(), err))
 			c.Abort()
 			return
 		}

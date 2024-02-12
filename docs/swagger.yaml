@@ -169,6 +169,44 @@ paths:
       summary: Create a new study set
       tags:
       - study-set
+    put:
+      consumes:
+      - application/json
+      description: Update a study set
+      parameters:
+      - description: StudySet
+        in: body
+        name: StudySet
+        required: true
+        schema:
+          $ref: '#/definitions/model.StudySet'
+      - description: Bearer + Access Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StudySet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrResp'
+      summary: Update a study set
+      tags:
+      - study-set
   /study-set/{id}:
     delete:
       description: Delete a study set

@@ -37,3 +37,18 @@ func (s flashcardStore) DeleteStudySet(ctx context.Context, studySetID string) e
 	tx.Commit()
 	return nil
 }
+
+func (s flashcardStore) UpdateStudySet(ctx context.Context, studySet *model.StudySet) (model.StudySet, error) {
+	var set model.StudySet
+
+	s.db.Model(&model.StudySet{}).First(&set, studySet.ID)
+
+	set.SetName = studySet.SetName
+	set.Description = studySet.Description
+
+	if err := s.db.Save(&set).Error; err != nil {
+		return model.StudySet{}, err
+	}
+
+	return set, nil
+}

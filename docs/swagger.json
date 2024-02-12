@@ -10,6 +10,63 @@
     "basePath": "/v1",
     "paths": {
         "/study-set": {
+            "put": {
+                "description": "Update a study set",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "study-set"
+                ],
+                "summary": "Update a study set",
+                "parameters": [
+                    {
+                        "description": "StudySet",
+                        "name": "StudySet",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.StudySet"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer + Access Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.StudySet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrResp"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrResp"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new study set",
                 "consumes": [
